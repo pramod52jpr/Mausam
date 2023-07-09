@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, unused_local_variable, prefer_typing_uninitialized_variables, use_key_in_widget_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -101,7 +103,6 @@ class _WeatherPage extends State {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchLocation().then(
         (paramValue) => getLocation().then((locationValue) => mausamchange()));
@@ -128,13 +129,6 @@ class _WeatherPage extends State {
                 fontSize: 45,
                 fontFamily: "EBGaramontEb",
                 letterSpacing: 3,
-                shadows: [
-                  Shadow(
-                    blurRadius: 6,
-                    color: Colors.black,
-                    offset: Offset(0, 0),
-                  ),
-                ],
               ),
             ),
           ],
@@ -363,27 +357,32 @@ class _WeatherPage extends State {
                                       height: 10,
                                     ),
                                     Row(
-                                      verticalDirection: VerticalDirection.up,
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Icon(
                                           Icons.location_on,
                                           color: Colors.white,
-                                          size: 40,
+                                          size: 35,
                                         ),
                                         SizedBox(
                                           width: 5,
                                         ),
-                                        Text(
-                                          "${weather['name']}, ${weather['sys']['country']}",
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            color: Colors.white,
-                                            fontFamily: "EBGaramontRg",
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 2,
+                                        ConstrainedBox(
+                                          constraints:
+                                              BoxConstraints(maxWidth: 260),
+                                          child: Text(
+                                            textAlign: TextAlign.center,
+                                            "${weather['name']}, ${weather['sys']['country']}",
+                                            style: TextStyle(
+                                              fontSize: 27,
+                                              color: Colors.white,
+                                              fontFamily: "EBGaramontRg",
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 2,
+                                              overflow: TextOverflow.fade,
+                                            ),
                                           ),
                                         ),
                                       ],

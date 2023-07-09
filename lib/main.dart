@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mausam/weatherPage.dart';
@@ -18,7 +20,6 @@ class _App extends State {
   var y = -4.0;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Timer(
       Duration(seconds: 0),
