@@ -7,16 +7,16 @@ import 'package:mausam/weatherPage.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: App(),
+    home: MyApp(),
   ));
 }
 
-class App extends StatefulWidget {
+class MyApp extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _App();
+  State<StatefulWidget> createState() => _MyApp();
 }
 
-class _App extends State {
+class _MyApp extends State {
   var y = -4.0;
   @override
   void initState() {
