@@ -43,6 +43,14 @@ class _WeatherPage extends State {
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
       LocationPermission askPermission = await Geolocator.requestPermission();
+      if (askPermission == LocationPermission.whileInUse ||
+          askPermission == LocationPermission.always) {
+        await getLocation();
+        setState(() {});
+      } else {
+        city = "Palwal";
+        setState(() {});
+      }
     } else {
       Position currentPosition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
