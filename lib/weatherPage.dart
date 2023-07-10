@@ -38,6 +38,15 @@ class _WeatherPage extends State {
     setState(() {});
   }
 
+  Future getLiveLocation() async {
+    Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+    List place = await placemarkFromCoordinates(
+        currentPosition.latitude, currentPosition.longitude);
+    city = await place[0].locality;
+    setState(() {});
+  }
+
   Future getLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
@@ -52,11 +61,7 @@ class _WeatherPage extends State {
         setState(() {});
       }
     } else {
-      Position currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best);
-      List place = await placemarkFromCoordinates(
-          currentPosition.latitude, currentPosition.longitude);
-      city = place[0].locality;
+      await getLiveLocation();
       setState(() {});
     }
   }
@@ -100,6 +105,9 @@ class _WeatherPage extends State {
                   weatherType = "assets/images/clear.jpg";
                   break;
                 case "Mist":
+                  weatherType = "assets/images/mist.jpg";
+                  break;
+                case "Haze":
                   weatherType = "assets/images/mist.jpg";
                   break;
                 default:
@@ -166,21 +174,19 @@ class _WeatherPage extends State {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: () async {
-          Future.delayed(
-            Duration(seconds: 3),
-            () {
-              setState(() {});
-            },
-          );
-        },
+        onRefresh: () => Future.delayed(
+          Duration(seconds: 3),
+          () {
+            setState(() {});
+          },
+        ),
         child: SingleChildScrollView(
           child: Stack(
             children: [
               weatherType.isNotEmpty
                   ? Image.asset(
                       weatherType,
-                      height: media.size.height * 0.883,
+                      height: media.size.height * 0.9,
                       fit: BoxFit.cover,
                     )
                   : Container(),
