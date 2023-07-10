@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, unused_local_variable, prefer_typing_uninitialized_variables, use_key_in_widget_constructors, file_names, prefer_const_literals_to_create_immutables, sort_child_properties_last, unnecessary_string_interpolations
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -17,6 +19,7 @@ class WeatherPage extends StatefulWidget {
 
 class _WeatherPage extends State {
   bool contact = false;
+  var opacity = 0.0;
   var city;
   var cityDetails;
   var weather;
@@ -120,6 +123,10 @@ class _WeatherPage extends State {
   @override
   void initState() {
     super.initState();
+    Timer(Duration(seconds: 0), () {
+      opacity = 1.0;
+      setState(() {});
+    });
     fetchLocation().then(
         (paramValue) => getLocation().then((locationValue) => mausamchange()));
   }
@@ -153,7 +160,7 @@ class _WeatherPage extends State {
         backgroundColor: Colors.lightBlueAccent,
       ),
       floatingActionButton: SizedBox.square(
-        dimension: 80,
+        dimension: 60,
         child: FloatingActionButton(
           splashColor: Colors.blue,
           tooltip: contact ? "See Weather" : "About Owner",
@@ -165,11 +172,11 @@ class _WeatherPage extends State {
           child: contact
               ? FaIcon(
                   FontAwesomeIcons.cloudSunRain,
-                  size: 40,
+                  size: 30,
                 )
               : FaIcon(
                   FontAwesomeIcons.user,
-                  size: 40,
+                  size: 30,
                 ),
         ),
       ),
@@ -180,233 +187,239 @@ class _WeatherPage extends State {
             setState(() {});
           },
         ),
-        child: SingleChildScrollView(
-          child: Stack(
-            children: [
-              weatherType.isNotEmpty
-                  ? Image.asset(
-                      weatherType,
-                      height: media.size.height * 0.9,
-                      fit: BoxFit.cover,
-                    )
-                  : Container(),
-              Container(
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 0.3),
-                    borderRadius: BorderRadius.circular(10)),
-                margin: EdgeInsets.all(10),
-                child: DropDownTextField(
-                  clearOption: false,
-                  textFieldDecoration: InputDecoration(
-                    hintText: "Select Any City",
-                    hintStyle: TextStyle(color: Colors.white),
-                    enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(width: 0, color: Colors.transparent)),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(width: 0, color: Colors.transparent)),
-                    contentPadding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+        child: AnimatedOpacity(
+          duration: Duration(seconds: 2),
+          opacity: opacity,
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                weatherType.isNotEmpty
+                    ? Image.asset(
+                        weatherType,
+                        height: media.size.height * 0.9,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(255, 255, 255, 0.3),
+                      borderRadius: BorderRadius.circular(10)),
+                  margin: EdgeInsets.all(10),
+                  child: DropDownTextField(
+                    clearOption: false,
+                    textFieldDecoration: InputDecoration(
+                      hintText: "Select Any City",
+                      hintStyle: TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0, color: Colors.transparent)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 0, color: Colors.transparent)),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    ),
+                    searchDecoration: InputDecoration(hintText: "Search City"),
+                    textStyle: TextStyle(fontSize: 20, color: Colors.white),
+                    initialValue: city,
+                    dropDownIconProperty:
+                        IconProperty(color: Colors.white, size: 30),
+                    enableSearch: true,
+                    dropDownList: dropdown,
+                    onChanged: (value) {
+                      city = value.value;
+                      setState(() {});
+                      mausamchange();
+                      contact = false;
+                      setState(() {});
+                    },
                   ),
-                  searchDecoration: InputDecoration(hintText: "Search City"),
-                  textStyle: TextStyle(fontSize: 20, color: Colors.white),
-                  initialValue: city,
-                  dropDownIconProperty:
-                      IconProperty(color: Colors.white, size: 30),
-                  enableSearch: true,
-                  dropDownList: dropdown,
-                  onChanged: (value) {
-                    city = value.value;
-                    setState(() {});
-                    mausamchange();
-                    contact = false;
-                    setState(() {});
-                  },
                 ),
-              ),
-              Center(
-                child: Container(
-                  margin: EdgeInsets.only(top: 120),
-                  height: 350,
-                  width: 350,
-                  child: Card(
-                    shadowColor: Colors.blue,
-                    shape: ContinuousRectangleBorder(
-                        borderRadius: BorderRadius.circular(200)),
-                    color: Color.fromRGBO(255, 255, 255, 0.1),
-                    child: contact
-                        ? Column(
-                            children: [
-                              SizedBox(height: 10),
-                              Text(
-                                "Contact Us",
-                                style: TextStyle(
-                                    fontSize: 40,
-                                    fontFamily: "EBGaramontRg",
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                              Text(
-                                "Wanna Connect With Us?",
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontFamily: "EBGaramontRg",
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                              SizedBox(height: 15),
-                              Text(
-                                "Pramod Pandit",
-                                style: TextStyle(
-                                    fontSize: 40,
-                                    fontFamily: "EBGaramontEb",
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              ),
-                              SizedBox(height: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.email,
-                                        size: 30,
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        "pramod52jpr@gmail.com",
-                                        style: TextStyle(
-                                            fontSize: 25,
-                                            fontFamily: "EBGaramontRg",
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.phone,
-                                        size: 30,
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        "9991969489",
-                                        style: TextStyle(
-                                            fontSize: 25,
-                                            fontFamily: "EBGaramontRg",
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 20),
-                              Text(
-                                "Thank You ...",
-                                style: TextStyle(
-                                    fontSize: 40,
-                                    fontFamily: "EBGaramontRg",
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                              )
-                            ],
-                          )
-                        : Column(
-                            children: weather == null
-                                ? [shimmer()]
-                                : [
-                                    Text(
-                                      "${(weather['main']['temp'] - 273.15).round()}°",
-                                      style: TextStyle(
-                                        fontSize: 90,
-                                        color: Colors.white,
-                                        fontFamily: "EBGaramontEb",
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                        "Min: ${(weather['main']['temp_min'] - 273.15).round()}° | Max:${(weather['main']['temp_max'] - 273.15).round()}°",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "EBGaramontRg",
-                                        )),
-                                    Text("${weather['weather'][0]['main']}",
-                                        style: TextStyle(
-                                            fontSize: 40,
-                                            color: Colors.white,
-                                            fontFamily: "EBGaramontRg",
-                                            fontWeight: FontWeight.bold)),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                        "${DateFormat("EEEE, MMM d, hh:mm a").format(DateTime.now())}",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontFamily: "EBGaramontRg",
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1.5,
-                                        )),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 120),
+                    height: 340,
+                    width: 330,
+                    child: Card(
+                      shadowColor: Colors.blue,
+                      shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(200)),
+                      color: Color.fromRGBO(255, 255, 255, 0.1),
+                      child: contact
+                          ? Column(
+                              children: [
+                                SizedBox(height: 10),
+                                Text(
+                                  "Contact Us",
+                                  style: TextStyle(
+                                      fontSize: 40,
+                                      fontFamily: "EBGaramontRg",
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                Text(
+                                  "Wanna Connect With Us?",
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      fontFamily: "EBGaramontRg",
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                SizedBox(height: 15),
+                                Text(
+                                  "Pramod Pandit",
+                                  style: TextStyle(
+                                      fontSize: 40,
+                                      fontFamily: "EBGaramontEb",
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                ),
+                                SizedBox(height: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                                     Row(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Icon(
-                                          Icons.location_on,
+                                          Icons.email,
+                                          size: 30,
                                           color: Colors.white,
-                                          size: 35,
                                         ),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        ConstrainedBox(
-                                          constraints:
-                                              BoxConstraints(maxWidth: 260),
-                                          child: Text(
-                                            textAlign: TextAlign.center,
-                                            "${weather['name']}, ${weather['sys']['country']}",
-                                            style: TextStyle(
-                                              fontSize: 27,
-                                              color: Colors.white,
+                                        SizedBox(width: 10),
+                                        Text(
+                                          "pramod52jpr@gmail.com",
+                                          style: TextStyle(
+                                              fontSize: 25,
                                               fontFamily: "EBGaramontRg",
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 2,
-                                              overflow: TextOverflow.fade,
-                                            ),
-                                          ),
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.phone,
+                                          size: 30,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          "9991969489",
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              fontFamily: "EBGaramontRg",
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
                                         ),
                                       ],
                                     ),
                                   ],
-                          ),
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  "Thank You ...",
+                                  style: TextStyle(
+                                      fontSize: 40,
+                                      fontFamily: "EBGaramontRg",
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white),
+                                )
+                              ],
+                            )
+                          : Column(
+                              children: weather == null
+                                  ? [shimmer()]
+                                  : [
+                                      Text(
+                                        "${(weather['main']['temp'] - 273.15).round()}°",
+                                        style: TextStyle(
+                                          fontSize: 90,
+                                          color: Colors.white,
+                                          fontFamily: "EBGaramontEb",
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                          "Min: ${(weather['main']['temp_min'] - 273.15).round()}° | Max:${(weather['main']['temp_max'] - 273.15).round()}°",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "EBGaramontRg",
+                                          )),
+                                      Text("${weather['weather'][0]['main']}",
+                                          style: TextStyle(
+                                              fontSize: 40,
+                                              color: Colors.white,
+                                              fontFamily: "EBGaramontRg",
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                          "${DateFormat("EEEE, MMM d, hh:mm a").format(DateTime.now())}",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontFamily: "EBGaramontRg",
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1.5,
+                                          )),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.location_on,
+                                            color: Colors.white,
+                                            size: 35,
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          ConstrainedBox(
+                                            constraints:
+                                                BoxConstraints(maxWidth: 260),
+                                            child: Text(
+                                              textAlign: TextAlign.center,
+                                              "${weather['name']}, ${weather['sys']['country']}",
+                                              style: TextStyle(
+                                                fontSize: 27,
+                                                color: Colors.white,
+                                                fontFamily: "EBGaramontRg",
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 2,
+                                                overflow: TextOverflow.fade,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                            ),
+                    ),
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
