@@ -18,6 +18,7 @@ class WeatherPage extends StatefulWidget {
 }
 
 class _WeatherPage extends State {
+  bool mylocation = true;
   bool contact = false;
   var opacity = 0.0;
   var city;
@@ -181,9 +182,11 @@ class _WeatherPage extends State {
         ),
       ),
       body: RefreshIndicator(
+        backgroundColor: Color.fromRGBO(135, 206, 235, 1),
         onRefresh: () => Future.delayed(
           Duration(seconds: 3),
           () {
+            mausamchange();
             setState(() {});
           },
         ),
@@ -227,6 +230,10 @@ class _WeatherPage extends State {
                     enableSearch: true,
                     dropDownList: dropdown,
                     onChanged: (value) {
+                      final snackbar =
+                          SnackBar(content: Text("Please Wait ... "));
+                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                      mylocation = false;
                       city = value.value;
                       setState(() {});
                       mausamchange();
@@ -238,7 +245,7 @@ class _WeatherPage extends State {
                 Center(
                   child: Container(
                     margin: EdgeInsets.only(top: 120),
-                    height: 340,
+                    height: mylocation ? 340 : 400,
                     width: 330,
                     child: Card(
                       shadowColor: Colors.blue,
@@ -413,6 +420,41 @@ class _WeatherPage extends State {
                                           ),
                                         ],
                                       ),
+                                      SizedBox(height: 10),
+                                      mylocation
+                                          ? Container()
+                                          : ElevatedButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateColor
+                                                          .resolveWith(
+                                                              (states) => Color
+                                                                  .fromRGBO(
+                                                                      255,
+                                                                      255,
+                                                                      255,
+                                                                      0.3))),
+                                              onPressed: () {
+                                                final snackbar = SnackBar(
+                                                    content: Text(
+                                                        "Please Wait ... "));
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackbar);
+                                                mylocation = true;
+                                                setState(() {});
+                                                fetchLocation().then(
+                                                    (paramValue) => getLocation()
+                                                        .then((locationValue) =>
+                                                            mausamchange()));
+                                              },
+                                              child: Text(
+                                                "My Location",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: "EBGaramontRg",
+                                                    fontSize: 25),
+                                              )),
                                     ],
                             ),
                     ),
